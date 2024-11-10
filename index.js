@@ -38,7 +38,6 @@ app.post("/webhook",(req,res)=>{ //i want some
     console.log(JSON.stringify(body_param,null,2));
 
     if(body_param.object){
-        console.log("inside body param");
         if(body_param.entry && 
             body_param.entry[0].changes && 
             body_param.entry[0].changes[0].value.messages && 
@@ -51,22 +50,63 @@ app.post("/webhook",(req,res)=>{ //i want some
                console.log("phone number "+phon_no_id);
                console.log("from "+from);
                console.log("boady param "+msg_body);
-
+                if(msg_body==="OTP"){
                axios({
                    method:"POST",
                    url:"https://graph.facebook.com/v13.0/"+phon_no_id+"/messages?access_token="+token,
                    data:{
                        messaging_product:"whatsapp",
                        to:from,
-                       text:{
-                           body:"Hi.. I'm Prasath, your message is "+msg_body
-                       }
+                       type: "template", 
+                        template: { name: "otp",
+                        language: { "code": "en" } ,
+                        components: [
+                        {
+                            type: "body",
+                            parameters: [
+                            {
+                                type: "text",
+                                text: "123564"
+                            }
+                            ]
+                        },
+                        {
+                            type: "button",
+                            sub_type: "url",
+                            index: 0,
+                            parameters: [
+                            {
+                                type: "text",
+                                text: "123564"
+                            }
+                            ]
+                        }
+                        ]
+                    }
                    },
                    headers:{
                        "Content-Type":"application/json"
                    }
 
                });
+            }
+            else{
+                axios({
+                    method:"POST",
+                    url:"https://graph.facebook.com/v13.0/"+phon_no_id+"/messages?access_token="+token,
+                    data:{
+                        messaging_product:"whatsapp",
+                        to:from,
+                        text:{
+                            body:"Hi.. I'm Aditya, your message is : "+msg_body
+                        }
+                    },
+                    headers:{
+                        "Content-Type":"application/json"
+                    }
+ 
+                });
+            }
 
                res.sendStatus(200);
             }else{
