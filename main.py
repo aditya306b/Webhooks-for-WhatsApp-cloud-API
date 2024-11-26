@@ -3,13 +3,12 @@ import requests
 from fastapi.responses import JSONResponse
 import httpx
 import os
-from pydantic import BaseModel
 
 app = FastAPI()
 
 # Load environment variables
-TOKEN = "EAAIVqF7i4GMBO4P9TZAlFqWKScMgdCKe32bZACW2Q6yz12bVoQ8VHZCP49ZBpSnZCa8GKUVFiyVUs7wkqjce2Un5O2ZARhOpB08dZAUbJZC5wrSsKedEkVQ1WcyztTbbMD3U8HkbffEToSKj95w3nUdSSDmOFJfA5hehKyTOcaLNyVUiVW5NaYKNqyr2j9gwRgoyMxipUjy1ZAhlVDmItcQ0Qvyc7ZC3DkS4J66apJiMtS"
-MYTOKEN = "JSDJK"
+TOKEN = os.getenv("TOKEN")
+MYTOKEN = os.getenv("MYTOKEN")
 
 # Webhook verification
 @app.get("/webhook")
