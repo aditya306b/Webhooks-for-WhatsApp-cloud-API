@@ -2,3 +2,5 @@ uvicorn
 fastapi
 requests
 openai
+pydantic
+pymssql
