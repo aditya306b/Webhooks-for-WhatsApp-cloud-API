@@ -1,5 +1,4 @@
 import os
-import tempfile
 from constants import URL
 from utils.fetch import fetch_data
 from utils.llm import trascribe_audio

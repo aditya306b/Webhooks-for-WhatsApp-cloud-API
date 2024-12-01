@@ -2,8 +2,8 @@ from fastapi import FastAPI, Request, Query, Response, APIRouter
 from fastapi.responses import JSONResponse
 import requests
 
-from constants import MYTOKEN, TOKEN
-from services.messages import diffrentiate_msg_type, process_msg
+from constants import MYTOKEN
+from services.messages import process_msg
 from utils.fetch import send_message
 
 route = APIRouter()
