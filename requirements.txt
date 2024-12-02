@@ -3,4 +3,7 @@ fastapi
 requests
 openai
 pydantic
-pymssql
+db-sqlite3
+langchain
+langchain-openai
+langchain-community

@@ -12,6 +12,12 @@ class TaskParser(BaseModel):
 class ResponseParser(BaseModel):
     response: str
 
+    @staticmethod
+    def get_json():
+        return {
+            "response": ""
+        }
+
 class TaskDiffrentiateParser(BaseModel):
     intent: str
 
@@ -20,3 +26,4 @@ class TaskDiffrentiateParser(BaseModel):
         return {
             "intent": "str"
         }
+

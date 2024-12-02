@@ -1,5 +1,4 @@
-def detect_task_prompt(usr_msg, response_format):
-    return f"""
+DETECT_TASK_PROMPT = """
     You are an assistant that classifies user requests related to task management into one of the following intents:
 
     1. **add_task**: The user wants to create a new task.
@@ -17,19 +16,31 @@ def detect_task_prompt(usr_msg, response_format):
     5. **other**: The user's request does not fall into any of the above categories.
 
     Given a user's input, identify and output the intent category it belongs to.
-    Response in the following JSON format: {response_format}
+    Response in the following JSON format: {layout}
 
     USER MESSAGE:
     ### 
-    {usr_msg}
+    {msg}
     ###
 
     """
 
-def extract_task_promtp(msg, format):
-    return f"""
+EXTRACT_TASK_PROMPT = """
     You are an assistant that extracts the task from a user's message.
-    Response in the following JSON format: {format}
+    Donot add any prefix or suffix to the task. (eg. Task on or Add task on) only identify the main task. or in other words extract main task from the user message.
+    Response in the following JSON format: {layout}
+
+    USER MESSAGE:
+    ###
+    {msg}
+    ###
+    """
+
+EXTRACT_ID_PROMPT = """
+    You are an assistant who understand things carwfully.
+    Your role is to understand the user msg and extract the task id from the user message. it could in words or numbers.
+    Response in the following JSON format: {layout}
+    If there are multiple numbers in the message, or no number, return an error message in the response key-value
 
     USER MESSAGE:
     ###

@@ -30,9 +30,9 @@ async def handle_webhook(request: Request):
     body_param = await request.json()
     print(f"Body Param | {body_param}")
 
-    sender, msg = process_msg(body_param)
+    sender, msg, intent = process_msg(body_param)
     print("---"*10)
-    response = diffrentiate_user_input(msg, sender.get("wa_id"))
+    response = diffrentiate_user_input(msg, sender.get("wa_id"), intent)
     # llm_call(TASK_DETECT_PROMPT, f"Detect the task, TASk: {msg}" )
 
     send_message(sender.get("wa_id"), response)

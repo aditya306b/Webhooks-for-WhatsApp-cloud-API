@@ -1,7 +1,10 @@
+import json
+from langchain_openai import ChatOpenAI
 from openai import OpenAI
+from langchain_core.prompts import PromptTemplate
+
 
 from constants import OPENAI_API_KEY
-from utils.parsers import ResponseParser
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
@@ -32,17 +35,16 @@ def img_call(base_64, prompt):
   
     return response.choices[0].message.content if response.choices else None
 
-def llm_call(sys_prompt, usr_prompt, parser=ResponseParser):
+def llm_call(prompt, parser, **format):
     try:
-        completion = client.beta.chat.completions.parse(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": sys_prompt if sys_prompt else "You are a helpful assistant"},
-                {"role": "user", "content": usr_prompt},
-            ],
-            response_format=parser,
-        )
-        return completion.choices[0].message.parsed.response
+        llm = ChatOpenAI(api_key=OPENAI_API_KEY, model="gpt-4o-mini")
+        res=llm.with_structured_output(parser ,method="json_mode", include_raw=True)
+        refined_prompt = PromptTemplate.from_template(prompt).format(**format)
+        response = res.invoke(refined_prompt)
+        response = response["raw"].content
+        response = json.loads(response)
+        response = parser(**response)
+        return response
     except Exception as e:
         print("Error")
         print(e)
