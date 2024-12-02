@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .  # Build the Docker image from the current directory
+      dockerfile: Dockerfile  # Specify the Dockerfile
+    container_name: app-container
+    ports:
+      - "8000:8000"  # Exposes your Python app on port 8000
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15  # Use PostgreSQL version 15
+    container_name: postgres-container
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+    driver: local
