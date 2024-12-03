@@ -21,7 +21,7 @@ def send_message(recipient: str, msg_body: str):
         payload = {
             "messaging_product": "whatsapp",
             "to": recipient,
-            "text": {"body": f"{msg_body}"}
+            "text": {"body": f"{msg_body[:4095]}"}
         }
         res = requests.post(url, headers=headers, json=payload, params={"access_token": TOKEN})
         print(res.json())

@@ -35,9 +35,9 @@ def img_call(base_64, prompt):
   
     return response.choices[0].message.content if response.choices else None
 
-def llm_call(prompt, parser, **format):
+def llm_call(prompt, parser, model="gpt-4o-mini", **format):
     try:
-        llm = ChatOpenAI(api_key=OPENAI_API_KEY, model="gpt-4o-mini")
+        llm = ChatOpenAI(api_key=OPENAI_API_KEY, model=model)
         res=llm.with_structured_output(parser ,method="json_mode", include_raw=True)
         refined_prompt = PromptTemplate.from_template(prompt).format(**format)
         response = res.invoke(refined_prompt)
@@ -49,3 +49,20 @@ def llm_call(prompt, parser, **format):
         print("Error")
         print(e)
         raise e
+
+
+
+def logic_call(prompt):
+    try:
+        response = client.chat.completions.create(
+            model="o1-mini",
+            messages=[
+                {"role": "user", "content": [
+                    {"type": "text", "text": f"You role is to extract the date and time which user enters in the message and calculate the UNIX time of it think step by step to process it and return only the UNIX time \n\n User msg: {prompt} \n\n"}]}
+            ])
+    except Exception as e:
+        print("Error")
+        print(e)
+        raise e
+    breakpoint() 
+    return response

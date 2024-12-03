@@ -2,11 +2,13 @@ from pydantic import BaseModel
 
 class TaskParser(BaseModel):
     task: str
+    timestamp: float
 
     @staticmethod
     def get_json():
         return {
-            "task": ""
+            "task": "",
+            "timestamp": 0.0
         }
 
 class ResponseParser(BaseModel):

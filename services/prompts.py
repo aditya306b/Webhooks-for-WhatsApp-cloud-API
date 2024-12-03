@@ -1,3 +1,18 @@
+BIFERGATE_PROMPT = """
+    You are an assistant that classifies user requests into one of the following intents:
+
+    - task: The user wants to add, update, delete or modify or want to do something with tasks.
+    - mail: The user wants to send an email.
+
+    Given a user's input, identify and output the intent category it belongs to.
+    Response in the following JSON format: {layout}
+
+    USER MESSAGE:
+    ### 
+    {msg}
+    ###
+"""
+
 DETECT_TASK_PROMPT = """
     You are an assistant that classifies user requests related to task management into one of the following intents:
 
@@ -25,10 +40,29 @@ DETECT_TASK_PROMPT = """
 
     """
 
+    # Donot add any prefix or suffix to the task. (eg. Task on or Add task on) only identify the main task. or in other words extract main task from the user message.
 EXTRACT_TASK_PROMPT = """
     You are an assistant that extracts the task from a user's message.
-    Donot add any prefix or suffix to the task. (eg. Task on or Add task on) only identify the main task. or in other words extract main task from the user message.
-    Response in the following JSON format: {layout}
+
+    Extract a structured task with its associated reminder time from user input.
+
+    Input Processing Requirements:
+    - Identify the task description
+    - User Provide Data and time covner tit in timestamp
+    - Avoid Prefix the task
+    - Handle various time formats and natural language expressions
+
+    Input Parsing Rules:
+    - Avoid prefixes like "Create task on or add task on" and extract the main task from the user message.
+
+    Time can be in multiple formats like the following :
+    - Relative times (e.g., "in 2 hours", "tomorrow at 3 PM")
+    - Absolute times (e.g., "2024-06-15 14:30", "June 15th at 2:30 PM")
+    - Natural language expressions (e.g., "next week", "in 3 days")
+    NOTE - You'll be provided with date and time your task will be to calculate (by thinking it step by step) and convert it  in UNIX format make sure you donot change day to night or vice versa think it again if needed and carefully, calulate it correctly.
+    If you dont get timestamp you can send it 0.
+    
+    Response in the following JSON format: {layout}    
 
     USER MESSAGE:
     ###
