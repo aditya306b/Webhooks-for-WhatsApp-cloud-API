@@ -59,8 +59,15 @@ EXTRACT_TASK_PROMPT = """
     - Relative times (e.g., "in 2 hours", "tomorrow at 3 PM")
     - Absolute times (e.g., "2024-06-15 14:30", "June 15th at 2:30 PM")
     - Natural language expressions (e.g., "next week", "in 3 days")
-    NOTE - You'll be provided with date and time your task will be to calculate (by thinking it step by step) and convert it  in UNIX format make sure you donot change day to night or vice versa think it again if needed and carefully, calulate it correctly.
-    If you dont get timestamp you can send it 0.
+
+    You'll be provided with date and time and your task will be to convert it in following desired output - "YYYY,MM,DD,HR,MIN"
+    - If you are provided with date , year and month considre time 0:0
+    - If you are provided with date and month considre year 2024
+    - If you are given tommorow or day after tommorow then then think step by step and calculate the time by current time and date
+    - If you are given time only consider today's date (only when time is not passed in given time if passed return 0)
+    # Current time - {date}
+
+    If you dont get time in user message you can send it 0.
     
     Response in the following JSON format: {layout}    
 
@@ -72,9 +79,12 @@ EXTRACT_TASK_PROMPT = """
 
 EXTRACT_ID_PROMPT = """
     You are an assistant who understand things carwfully.
-    Your role is to understand the user msg and extract the task id from the user message. it could in words or numbers.
+    Your role is to understand the user msg and extract the list task id from the user message. 
+    -   It could in words or numbers.
+    -   If there are multiple numbers in the message extract in list.
+    -   If there only one number still return in list.
+    -   If there are no numbers return an error message.
     Response in the following JSON format: {layout}
-    If there are multiple numbers in the message, or no number, return an error message in the response key-value
 
     USER MESSAGE:
     ###

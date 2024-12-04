@@ -1,8 +1,9 @@
+import datetime
 import time
 from database.connect import connect_task_db
 from services.prompts import DETECT_TASK_PROMPT, EXTRACT_ID_PROMPT, EXTRACT_TASK_PROMPT
 from utils.llm import llm_call
-from utils.parsers import ResponseParser, TaskDiffrentiateParser, TaskParser
+from utils.parsers import ResponseDeleteTaskParser, ResponseParser, TaskDiffrentiateParser, TaskParser
 
 def task_diffrentiate(msg, usr, role=None):
     #parse the task and time from the msg
@@ -12,9 +13,12 @@ def task_diffrentiate(msg, usr, role=None):
         intent = res.intent
 
     if intent == "add_task":
-        res = llm_call(EXTRACT_TASK_PROMPT, TaskParser, msg=msg, layout=TaskParser.get_json())
+        res = llm_call(EXTRACT_TASK_PROMPT, TaskParser, msg=msg, layout=TaskParser.get_json(), date=str(datetime.datetime.now()))
         task = res.task
-        timestamp = res.timestamp
+        timestamp = res.timestamp.split(",")
+        timestamp = [int(i) for i in timestamp]
+        
+        timestamp = datetime.datetime(*timestamp)
         print(f"Task: {task} | Timestamp: {timestamp}")
 
         conn = connect_task_db()
@@ -37,20 +41,20 @@ def task_diffrentiate(msg, usr, role=None):
         return "Task added"
     
     elif intent == "delete_task":
-        res = llm_call(EXTRACT_ID_PROMPT, ResponseParser, msg=msg, layout=ResponseParser.get_json())
-        task = ""
+        res = llm_call(EXTRACT_ID_PROMPT, ResponseDeleteTaskParser, msg=msg, layout=ResponseDeleteTaskParser.get_json())
+        task = "Error in deleting task"
         task_id = None
         try:
-            task = res.response
-            task_id = int(task)
+            task = res.task_id
+            task_id = [int(i) for i in task]
         except:
             return task
 
         conn = connect_task_db()
-        delete_sql = "DELETE FROM tasks WHERE user=? AND id=?;"
+        delete_sql = f"DELETE FROM tasks WHERE user=? AND id IN ({','.join(['?']*len(task))});"
         try:
             cursor = conn.cursor()
-            cursor.execute(delete_sql, [usr, task_id])
+            cursor.execute(delete_sql, [usr, *task_id])
             conn.commit()
             print(f"Task deleted successfully.")
             cursor.close()
@@ -58,7 +62,7 @@ def task_diffrentiate(msg, usr, role=None):
             return "Task deleted"
         except Exception as e:
             print(f"Error deleting task: {e}")
-            return "Task not found"
+            return "Task ID not found to delete" 
         
 
     elif intent == "modify_task":
@@ -71,7 +75,8 @@ def task_diffrentiate(msg, usr, role=None):
             cursor = conn.cursor()
             cursor.execute(fetch_sql, [usr])
             rows = cursor.fetchall()
-            text = "*Tasks Lists*\n\n"
+            text = "*Tasks Lists*\n"
+            text += f"_Total Tasks_ : {len(rows)}\n\n"
             for row in rows: # 1st column is id, 2nd user 3rd is status 4th is task 
                 text += f"*Task* {row[0]}: "
                 text += f"{row[3]}" if not row[2] else f"~{row[3]}~"

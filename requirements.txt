@@ -7,3 +7,4 @@ db-sqlite3
 langchain
 langchain-openai
 langchain-community
+twilio

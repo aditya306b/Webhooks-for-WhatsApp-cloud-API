@@ -55,4 +55,4 @@ def get_msg_and_type(data: dict):
 def process_msg(data: dict):
     sender_details, messages = get_msg_and_type(data)
     msg_body, intent = diffrentiate_msg_type(messages)
-    return sender_details, msg_body, intent
+    return sender_details, msg_body, intent # dict , string, boolean
