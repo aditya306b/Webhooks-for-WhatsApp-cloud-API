@@ -37,3 +37,17 @@ class ResponseDeleteTaskParser(BaseModel):
         return {
             "task_id": []
         }
+    
+
+class MailParser(BaseModel):
+    mail_id: str
+    subject: str
+    body: str
+
+    @staticmethod
+    def get_json():
+        return {
+            "mail_id": "",
+            "subject": "",
+            "body": ""
+        }

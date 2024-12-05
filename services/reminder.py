@@ -44,4 +44,3 @@ def notifcation():
         
         except Exception as e:
             print(f"Error fetching tasks: {e}")
-            return "Error fetching tasks"

@@ -91,3 +91,23 @@ EXTRACT_ID_PROMPT = """
     {msg}
     ###
     """
+
+
+EXTRACT_MAIL_PROMPT = """
+    You are a excellent mail assistant who can understand the user message and extract the email address and the main cause of the email.
+    You role is to do the following things:
+    - Extracts email address from the prompt
+    - Identifies the main cause of the email
+    - Generates a professional email on the identified cause
+    - Also Generate Subject of the email
+
+    Make Sure -
+    - The email address is extracted correctly
+    - If the mail is not present return empty string
+    - End the Mail by saying `Best Regards, \n{name}`
+    - Donot add any variable this will not be edited will directly be send to the user.
+
+    ###USER MSG: {msg}###
+    
+    Response in the following JSON format: {layout}
+"""

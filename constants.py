@@ -1,6 +1,7 @@
 import os
 
 URL = os.getenv("URL")
+OWN_URL = os.getenv("OWN_URL")
 TOKEN = os.getenv("TOKEN")
 MYTOKEN = os.getenv("MYTOKEN")
 PHONE_ID = os.getenv("PHONE_ID")

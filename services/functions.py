@@ -1,9 +1,11 @@
 import datetime
 import time
 from database.connect import connect_task_db
-from services.prompts import DETECT_TASK_PROMPT, EXTRACT_ID_PROMPT, EXTRACT_TASK_PROMPT
+from services.prompts import DETECT_TASK_PROMPT, EXTRACT_ID_PROMPT, EXTRACT_MAIL_PROMPT, EXTRACT_TASK_PROMPT
+from services.reminder import send_msg
 from utils.llm import llm_call
-from utils.parsers import ResponseDeleteTaskParser, ResponseParser, TaskDiffrentiateParser, TaskParser
+from utils.mail import send_mail
+from utils.parsers import MailParser, ResponseDeleteTaskParser, ResponseParser, TaskDiffrentiateParser, TaskParser
 
 def task_diffrentiate(msg, usr, role=None):
     #parse the task and time from the msg
@@ -97,3 +99,13 @@ def task_diffrentiate(msg, usr, role=None):
     else:
         response = llm_call("Response for the Query: {msg} Respone in JSON following format: {layout}", ResponseParser, msg=msg, layout=ResponseParser.get_json())
         return response.response
+    
+
+
+def mail_initiate(msg, usr):
+    res = llm_call(EXTRACT_MAIL_PROMPT, MailParser, msg=msg, layout=MailParser.get_json(), name=usr.get("profile").get("name"))
+
+    if not res.mail_id:
+        return "No mail ID found, please provide the mail ID"
+    msg = send_mail(res.mail_id, res.subject, res.body)
+    return msg

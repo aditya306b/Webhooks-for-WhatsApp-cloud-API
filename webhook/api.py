@@ -33,11 +33,8 @@ async def handle_webhook(request: Request):
 
     sender, msg, intent = process_msg(body_param)
     print("---"*10)
-    response = diffrentiate_user_input(msg, sender.get("wa_id"), intent)
-    # llm_call(TASK_DETECT_PROMPT, f"Detect the task, TASk: {msg}" )
-
+    response = diffrentiate_user_input(msg, sender, intent)
     send_message(sender.get("wa_id"), response)
-
 
 def convert_time(timestamp):
     from datetime import datetime
