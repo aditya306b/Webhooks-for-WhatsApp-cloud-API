@@ -11,7 +11,7 @@ def send_msg(task, time):
     client = Client(TWILIO_ID, TWILIO_TOKEN)
 
     message = client.messages.create(
-        body=f"\nYou have task '{task}' to do at {time}",
+        body=f"\nYou have task '{task}' to do at {str(time)}",
         from_="+17752627819",
         to="+919009713031",
     )
